@@ -1,0 +1,17 @@
+{
+  "name": "utility-warehouse-coding-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test-runner.js"
+  },
+  "author": "Oliver Johnstone",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^2.5.1"
+  },
+  "dependencies": {
+    "service-locator": "^1.0.0"
+  }
+}
