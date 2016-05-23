@@ -1,0 +1,5 @@
+{
+  "development": {
+    "apiUrl": "https://api.icndb.com"
+  }
+}

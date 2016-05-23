@@ -12,6 +12,9 @@
     "mocha": "^2.5.1"
   },
   "dependencies": {
+    "configury": "^0.3.0",
+    "express": "^4.13.4",
+    "request": "^2.72.0",
     "service-locator": "^1.0.0"
   }
 }
