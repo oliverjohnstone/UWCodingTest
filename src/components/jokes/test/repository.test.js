@@ -1,7 +1,8 @@
 var assert = require('assert')
   , Repository = require('../repository')
   , sinon = require('sinon')
-  , noop = function () {}
+  , nock = require('nock')
+  , Api = require('../api')
 
 describe('JokeRepository', function () {
   it('should export a function', function () {
@@ -18,34 +19,49 @@ describe('JokeRepository', function () {
   })
 
   it('should make a call to the caching service', function (done) {
-    var mockSl = { cache: { set: sinon.spy(), get: sinon.spy() } }
+    var mockSl =
+        { cache:
+          { set: sinon.spy(function (key, ttl, value, cb) { return cb() })
+          , get: sinon.spy(function (key, cb) { return cb() })
+          }
+        }
       , repo = new Repository(mockSl, {})
-    
-    repo.getJoke(1, function (err) {
-      assert.ifError(err)
 
+    repo.getJoke(1, function (err) {
       assert.equal(mockSl.cache.get.calledOnce, true)
       done()
     })
   })
 
-  it('should make a call to the joke api when the joke can\'t be found in cache', function () {
-    var mockSl = { cache: { set: noop, get: sinon.spy() } }
-      , repo = new Repository(mockSl, {})
+  it('should return a random joke', function (done) {
+    nock('https://api.icndb.com')
+      .get('/jokes/random')
+      .reply(200, {
+        type: 'success',
+        value: {
+          id: 490,
+          joke: 'Chuck Norris doesn\'t need to use AJAX because pages are too afraid to postback anyways.',
+          categories: [ 'nerdy' ]
+        }
+      })
 
-    repo.getJoke(1, function (err) {
+    var sl =
+        { cache:
+          { set: sinon.spy(function (key, ttl, value, cb) { return cb() })
+            , get: sinon.spy(function (key, cb) { return cb() })
+          }
+        }
+      , repo = new Repository(sl, new Api('https://api.icndb.com'))
+
+    repo.getRandomJoke(function (err, joke) {
       assert.ifError(err)
 
-      assert.equal(mockSl.cache.get.calledOnce, true)
+      assert.deepEqual(joke
+        , { id: '81099e44567e969d935e095bdaec5fdc'
+          , joke: 'Chuck Norris doesn\'t need to use AJAX because pages are too afraid to postback anyways.'
+          }
+      )
       done()
     })
-  })
-
-  it('should return a random joke', function () {
-
-  })
-
-  it('should return a list of jokes', function () {
-
   })
 })
