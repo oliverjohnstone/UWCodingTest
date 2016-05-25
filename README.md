@@ -5,6 +5,8 @@ npm install
 
 ## Running
 node index.js
+visit http://localhost:8080/v1/jokes/random to retrieve and cache a random joke
+visit http://localhost:8080/v1/jokes/:id to retrieve a cached joke
 
 ## Testing
 npm test
